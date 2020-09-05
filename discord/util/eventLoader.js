@@ -4,4 +4,5 @@ module.exports = (client) => {
   client.on('messageDelete', reqEvent('messageDelete'));
   client.on('messageUpdate', reqEvent('messageUpdate'));
   client.on('message', reqEvent('message'));
+  client.on('voiceStateUpdate', reqEvent('voiceStateUpdate'));
 };
