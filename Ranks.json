@@ -1,0 +1,58 @@
+{
+  "administrator": {
+    "hexcolour": "#e8e800",
+    "discordrankid": ""
+  },
+  "seniorstaff": {
+    "hexcolour": "#ffa500",
+    "discordrankid": ""
+  },
+  "developer": {
+    "hexcolour": "#b400b4",
+    "discordrankid": ""
+  },
+  "juniordeveloper": {
+    "hexcolour": "#cd00cd",
+    "discordrankid": ""
+  },
+  "staff": {
+    "hexcolour": "#ff3333",
+    "discordrankid": ""
+  },
+  "juniorstaff": {
+    "hexcolour": "#b400b4",
+    "discordrankid": ""
+  },
+  "builder": {
+    "hexcolour": "#0080ff",
+    "discordrankid": ""
+  },
+  "eventstaff": {
+    "hexcolour": "#1eb6a7",
+    "discordrankid": ""
+  },
+  "socialmedia": {
+    "hexcolour": "#32cd32",
+    "discordrankid": ""
+  },
+  "contentcreator": {
+    "hexcolour": "#228b22",
+    "discordrankid": ""
+  },
+  "retired": {
+    "hexcolour": "#676767",
+    "discordrankid": ""
+  },
+  "iron": {
+    "hexcolour": "#808080",
+    "discordrankid": ""
+  },
+  "gold": {
+    "hexcolour": "#ffd700",
+    "discordrankid": ""
+  },
+  "diamond": {
+    "hexcolour": "#40e0d0",
+    "discordrankid": ""
+  }
+}

@@ -91,6 +91,15 @@ module.exports.run = async (client, message, args) => {
             return;
           }
 
+          if (!message.member.hasPermission(`${module.exports.help.permission}`) && promotedRole = 'seniorstaff' || !message.member.hasPermission(`${module.exports.help.permission}`) && promotedRole = 'administrator') {
+            let embed = new Discord.MessageEmbed()
+              .setTitle('Error!')
+              .setColor(HexColour.red)
+              .setDescription('You must be an Administrator to assign these roles.')
+            message.channel.send(embed);
+            return;
+          }
+
           if (playerRanksArray.includes(`${promotedRole}`)) {
             let embed = new Discord.MessageEmbed()
               .setTitle('Role already assigned')
@@ -124,6 +133,8 @@ module.exports.run = async (client, message, args) => {
         //
         case 'demote':
           const demotedRole = args[2];
+
+          // This is thrown if the user doesn't have the rank or what they specified doesn't exist.
           if (typeof(demotedRole) == "undefined") {
             let embed = new Discord.MessageEmbed()
               .setTitle('Role Not Found')
@@ -138,6 +149,15 @@ module.exports.run = async (client, message, args) => {
               .setTitle('Error!')
               .setDescription(`This role cannot be removed.`)
               .setColor(HexColour.red)
+            message.channel.send(embed);
+            return;
+          }
+
+          if (!message.member.hasPermission(`${module.exports.help.permission}`) && demotedRole = 'seniorstaff' || !message.member.hasPermission(`${module.exports.help.permission}`) && demotedRole = 'administrator') {
+            let embed = new Discord.MessageEmbed()
+              .setTitle('Error!')
+              .setColor(HexColour.red)
+              .setDescription('You must be an Administrator to assign these roles.')
             message.channel.send(embed);
             return;
           }
