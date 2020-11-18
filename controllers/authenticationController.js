@@ -49,11 +49,15 @@ module.exports.register_post = (req, res) => {
   let sql = `select * from playerdata where username = ? limit 1;
   select * from webaccounts where playerid = (select id from playerdata where username = ?) limit 1;`
   database.query (sql, [`${username}`, `${username}`], async function (err, results) {
-
-    console.log(results);
-
     // Check if the user has already started registering.
-    if (password != passwordconfirm) {
+    if (!results[0]) {
+      res.render('session/register', {
+        "pagetitle": "Register",
+        "success": null,
+        "error": true,
+        "errormsg": `You have not logged into the Network, please login and try again.`
+      });
+    } else if (password != passwordconfirm) {
       // Check if the passwords match.
       res.render('session/register', {
         "pagetitle": "Register",
@@ -61,22 +65,13 @@ module.exports.register_post = (req, res) => {
         "error": true,
         "errormsg": "The password you have entered does not match, please try again."
       });
-      return;
-    } else if (!results[0]) {
-      res.render('session/register', {
-        "pagetitle": "Register",
-        "success": null,
-        "error": true,
-        "errormsg": `You have not logged into the Network, please login and try again.`
-      });
-    } else if (results[1].length < 0) {
+    } else if (results[1].length) {
         res.render('session/register', {
           "pagetitle": "Register",
           "success": null,
           "error": true,
           "errormsg": "You are already registered or have started registration."
         });
-        return;
     } else {
         // Hash the password
         const salt = await bcrypt.genSalt();
