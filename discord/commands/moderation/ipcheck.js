@@ -1,20 +1,28 @@
 const Discord = require('discord.js');
 const config = require('../../../config.json');
-const hexcolour = require('../../../hexcolour.json');
+const HexColour = require('../../../HexColour.json');
 const database = require('../../../controllers/database.js'); // Database controller
 const moment = require('moment');
 moment().format();
 
 module.exports.run = async (client, message, args) => {
-  // Checks if the user has permissions to run the command.
-  if (!message.member.hasPermission(`${module.exports.help.permission}`)) {
+  if (message.channel.name != config.ipcheckchannel) {
     let embed = new Discord.MessageEmbed()
       .setTitle('Error!')
-      .setColor(hexcolour.red)
-      .setDescription('You do not have permissions to run this command.')
-    message.channel.send(embed).then(msg => msg.delete({ timeout: 3000 }));
+      .setColor(HexColour.red)
+      .setDescription('You can not execute this command here.')
+    message.channel.send(embed);
     return;
-  }
+  } else {
+    // Checks if the user has permissions to run the command.
+    if (!message.member.hasPermission(`${module.exports.help.permission}`)) {
+      let embed = new Discord.MessageEmbed()
+        .setTitle('Error!')
+        .setColor('#ff6666')
+        .setDescription('You do not have permissions to run this command.')
+      message.channel.send(embed);
+      return;
+    }
 
   if (message.channel.name == config.altcheckchannel) {
     //
@@ -28,7 +36,7 @@ module.exports.run = async (client, message, args) => {
         if (!results.length) {
           let embed = new Discord.MessageEmbed()
              .setTitle('Error!')
-             .setColor(hexcolour.red)
+             .setColor(HexColour.red)
              .setDescription('This user does not exist.')
           message.channel.send(embed).then(msg => msg.delete({ timeout: 3000 }));
           return;
@@ -41,7 +49,7 @@ module.exports.run = async (client, message, args) => {
           } else {
             let embed = new Discord.MessageEmbed()
             .setTitle(`${args[0]}'s Connected Accounts & IPs`)
-            .setColor(hexcolour.orange)
+            .setColor(HexColour.orange)
             .setFooter('This contains sensitive information, DO NOT send this to anyone.')
 
             results.forEach(function(playeripdata) {
