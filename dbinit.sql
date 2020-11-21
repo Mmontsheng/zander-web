@@ -21,16 +21,21 @@ create index playerdata_username on playerdata (username);
 CREATE TABLE playerprofile (
   id int AUTO_INCREMENT PRIMARY KEY NOT NULL,
   playerid INT NOT NULL DEFAULT 0,
-  twitter VARCHAR(15),
+  email TEXT,
+  emailstatus BOOLEAN DEFAULT 0,
+  interests TEXT,
+  twitter VARCHAR(16),
+  twitch VARCHAR(26),
   youtube TEXT,
-  instagram VARCHAR(30),
+  instagram VARCHAR(32),
   steam VARCHAR(32),
   github VARCHAR(40),
   facebook VARCHAR(50),
   snapchat VARCHAR(30),
+  instagram VARCHAR(32),
   discord TEXT,
-  aboutpage TEXT,
   coverart VARCHAR(64),
+  aboutpage TEXT,
   FOREIGN KEY (playerid) REFERENCES playerdata (id)
 );
 
@@ -49,26 +54,28 @@ create index gamesessions_sessionend on gamesessions (sessionend);
 
 CREATE TABLE gamepunishments (
   id int AUTO_INCREMENT PRIMARY KEY NOT NULL,
-  punisheduserid INT NOT NULL DEFAULT 0,
-  punisherid INT NOT NULL DEFAULT 0,
-  type VARCHAR(8),
-  reason VARCHAR(50),
-  appealed BOOLEAN,
-  punishtimestamp TIMESTAMP NOT NULL DEFAULT NOW(),
-  appealpunishtimestamp DATETIME,
-  FOREIGN KEY (punisheduserid) REFERENCES playerdata (id),
-  FOREIGN KEY (punisherid) REFERENCES playerdata (id)
+  playerid INT NOT NULL DEFAULT 0,
+  staffid INT NOT NULL DEFAULT 0,
+  type TEXT,
+  reason TEXT,
+  createdat TIMESTAMP NOT NULL DEFAULT NOW(),
+  expires DATETIME,
+  appealed BOOLEAN DEFAULT 0,
+  FOREIGN KEY (playerid) REFERENCES playerdata (id),
+  FOREIGN KEY (staffid) REFERENCES playerdata (id)
 );
 
 CREATE TABLE discordpunishments (
   id int AUTO_INCREMENT PRIMARY KEY NOT NULL,
-  punishedid VARCHAR(18),
-  punisherid VARCHAR(18),
-  punishtype VARCHAR(8),
-  reason VARCHAR(50),
-  appealed BOOLEAN,
-  punishtimestamp TIMESTAMP NOT NULL DEFAULT NOW(),
-  appealpunishtimestamp DATETIME
+  playerid INT NOT NULL DEFAULT 0,
+  staffid INT NOT NULL DEFAULT 0,
+  type TEXT,
+  reason TEXT,
+  createdat TIMESTAMP NOT NULL DEFAULT NOW(),
+  expires DATETIME,
+  appealed BOOLEAN DEFAULT 0,
+  FOREIGN KEY (playerid) REFERENCES playerdata (id),
+  FOREIGN KEY (staffid) REFERENCES playerdata (id)
 );
 
 CREATE TABLE webaccounts (
@@ -125,8 +132,8 @@ CREATE TABLE servers (
 CREATE TABLE ccstreams (
   id int AUTO_INCREMENT PRIMARY KEY NOT NULL,
   playerid INT NOT NULL DEFAULT 0,
-  channelname TEXT,
-  viewercount VARCHAR(10),
+  channel TEXT,
+  viewcount VARCHAR(10),
   status BOOLEAN,
   FOREIGN KEY (playerid) REFERENCES playerdata (id)
 );
@@ -144,3 +151,31 @@ CREATE TABLE votes (
   service TEXT,
   time TIMESTAMP NOT NULL DEFAULT NOW()
 );
+
+--
+--
+--
+--
+
+-- CREATE TABLE announcements (
+--   id int AUTO_INCREMENT PRIMARY KEY NOT NULL,
+--   body TEXT,
+--   -- motd BOOLEAN,
+--   ingame BOOLEAN,
+--   web BOOLEAN,
+--   createdat DATETIME,
+--   enabled BOOLEAN
+-- );
+
+-- CREATE TABLE appeals (
+--   id int AUTO_INCREMENT PRIMARY KEY NOT NULL,
+--   playerid INT NOT NULL DEFAULT 0,
+--   punishmentid INT NOT NULL DEFAULT 0,
+--   open BOOLEAN,
+--   locked BOOLEAN,
+--   appealed BOOLEAN,
+--   escalated BOOLEAN,
+--   createdat DATETIME,
+--   updatedat DATETIME,
+--   FOREIGN KEY (playerid) REFERENCES playerdata (id)
+-- );
