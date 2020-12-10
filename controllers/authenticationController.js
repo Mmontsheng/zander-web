@@ -1,41 +1,41 @@
-// const database = require('./database'); // zander Database controller
-// const transporter = require('./mail');
-// const config = require('../config.json');
-// const ejs = require('ejs');
-// const path = require('path');
-// const randomToken = require('random-token').create('abcdefghijklmnopqrstuvwxzyABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789');
-// const bcrypt = require('bcrypt');
+const database = require('./database'); // zander Database controller
+const transporter = require('./mail');
+const config = require('../config.json');
+const ejs = require('ejs');
+const path = require('path');
+const randomToken = require('random-token').create('abcdefghijklmnopqrstuvwxzyABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789');
+const bcrypt = require('bcrypt');
+
 //
-// //
-// // Login
-// // GET
-// //
-// module.exports.login_get = (req, res) => {
-//   res.render('session/login', {
-//     "pagetitle": "Login"
-//   });
-// };
+// Login
+// GET
 //
-// //
-// // Login
-// // POST
-// //
-// module.exports.login_post = (req, res) => {
-//   res.send('new login');
-// };
+module.exports.login_get = (req, res) => {
+  res.render('session/login', {
+    "pagetitle": "Login"
+  });
+};
+
 //
-// //
-// // Register
-// // GET
-// //
-// module.exports.register_get = (req, res) => {
-//   res.render('session/register', {
-//     "pagetitle": "Register",
-//     "success": null,
-//     "error": false
-//   });
-// };
+// Login
+// POST
 //
+module.exports.login_post = (req, res) => {
+  res.send('new login');
+};
+
+//
+// Register
+// GET
+//
+module.exports.register_get = (req, res) => {
+  res.render('session/register', {
+    "pagetitle": "Register",
+    "success": null,
+    "error": false
+  });
+};
+
 //
 // Register
 // POST

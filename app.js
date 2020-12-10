@@ -138,8 +138,8 @@ app.use((req, res, next) => {
 });
 
 // Routes
-// const authenticationRoutes = require('./routes/authenticationRoutes');
-// app.use(authenticationRoutes);
+const authenticationRoutes = require('./routes/authenticationRoutes');
+app.use(authenticationRoutes);
 
 const platformRoutes = require('./routes/platformRoutes');
 app.use(platformRoutes);
