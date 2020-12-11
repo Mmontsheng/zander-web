@@ -79,39 +79,40 @@ module.exports.register_post = (req, res) => {
         // Generate a verifation token
         const token = randomToken(32);
 
-        // Start the registration linking process and put token into table.
-        database.query (`insert into webaccounts (playerid, email, password, registrationtoken) values ((select id from playerdata where username = ?), ?, ?, ?);`, [`${username}`, `${email}`, `${hashpassword}`, `${token}`], function (err, results) {
-          if (err) {
-            throw err;
-            res.render('errorviews/500', {
-              "pagetitle": "500: Internal Server Error"
-            });
-            return;
-          } else {
-            // Registration email is sent to the user with their link code.
-            ejs.renderFile(path.join(__dirname, "../views/email/session/registerconfirmtoken.ejs"), {
-              username: username,
-              token: token,
-              serverip: config.serverip,
-              discordlink: config.discordlink,
-              contactemail: config.contactemail,
-              githubissuetrackerlink: config.githubissuetrackerlink,
-            }, function (err, data) {
-              if (err) {
-                console.log(err);
-                res.render('errorviews/500', {
-                  "pagetitle": "500: Internal Server Error"
-                });
-                return;
-              } else {
-                var mainOptions = {
-                  from: process.env.serviceauthuser,
-                  to: email,
-                  subject: `Registration Confirmation`,
-                  html: data
-                };
+        try {
+          // Start the registration linking process and put token into table.
+          database.query(`insert into webaccounts (playerid, email, password, registrationtoken) values ((select id from playerdata where username = ?), ?, ?, ?);`, [`${username}`, `${email}`, `${hashpassword}`, `${token}`], function (err, results) {
+            if (err) {
+              throw err;
+              res.render('errorviews/500', {
+                "pagetitle": "500: Internal Server Error"
+              });
+              return;
+            } else {
+              // Registration email is sent to the user with their link code.
+              ejs.renderFile(path.join(__dirname, "../views/email/session/registerconfirmtoken.ejs"), {
+                username: username,
+                token: token,
+                serverip: config.serverip,
+                discordlink: config.discordlink,
+                contactemail: config.contactemail,
+                githubissuetrackerlink: config.githubissuetrackerlink,
+              }, function (err, data) {
+                if (err) {
+                  console.log(err);
+                  res.render('errorviews/500', {
+                    "pagetitle": "500: Internal Server Error"
+                  });
+                  return;
+                } else {
+                  var mainOptions = {
+                    from: process.env.serviceauthuser,
+                    to: email,
+                    subject: `Registration Confirmation`,
+                    html: data
+                  };
 
-                transporter.sendMail(mainOptions, function (err, info) {
+                  transporter.sendMail(mainOptions, function (err, info) {
                     if (err) {
                       console.log(err);
                       res.render('errorviews/500', {
@@ -129,12 +130,27 @@ module.exports.register_post = (req, res) => {
                       transport.close();
                       return;
                     }
-                });
-              }
-            });
-          }
-        });
-        return;
+                  });
+                }
+              });
+            }
+          });
+        } catch {
+          res.render('session/register', {
+            "pagetitle": "Register",
+            // "success": true,
+            "error": true,
+            "errormsg": `An email is now heading your way with instructions of what to do next!`
+          });
+
+          res.render('session/register', {
+            "pagetitle": "Register",
+            "success": null,
+            "error": true,
+            "errormsg": `You have not logged into the Network, come and play by looking at our Server here: ${config.website}play`
+          });
+
+        }
       };
   });
 };
