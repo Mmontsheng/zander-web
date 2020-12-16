@@ -21,8 +21,6 @@ create index playerdata_username on playerdata (username);
 CREATE TABLE playerprofile (
   id int AUTO_INCREMENT PRIMARY KEY NOT NULL,
   playerid INT NOT NULL DEFAULT 0,
-  email TEXT,
-  emailstatus BOOLEAN DEFAULT 0,
   interests TEXT,
   twitter VARCHAR(16),
   twitch VARCHAR(26),
@@ -32,9 +30,8 @@ CREATE TABLE playerprofile (
   github VARCHAR(40),
   facebook VARCHAR(50),
   snapchat VARCHAR(30),
-  instagram VARCHAR(32),
-  discord TEXT,
-  coverart VARCHAR(64),
+  discord VARCHAR(18),
+  coverart TEXT,
   aboutpage TEXT,
   FOREIGN KEY (playerid) REFERENCES playerdata (id)
 );
@@ -175,7 +172,7 @@ CREATE TABLE votes (
 --   locked BOOLEAN,
 --   appealed BOOLEAN,
 --   escalated BOOLEAN,
---   createdat DATETIME,
---   updatedat DATETIME,
+--   createdate DATETIME,
+--   updatedate DATETIME,
 --   FOREIGN KEY (playerid) REFERENCES playerdata (id)
 -- );

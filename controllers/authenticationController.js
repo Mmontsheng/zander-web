@@ -47,15 +47,24 @@ module.exports.register_post = (req, res) => {
 
   // Check if the player has logged into the Network.
   let sql = `select * from playerdata where username = ? limit 1;
-  select * from webaccounts where playerid = (select id from playerdata where username = ?) limit 1;`
-  database.query (sql, [`${username}`, `${username}`], async function (err, results) {
-    // Check if the user has already started registering.
+  select * from webaccounts where playerid = (select id from playerdata where username = ?) limit 1;
+  select email from webaccounts where email=?`
+  database.query (sql, [`${username}`, `${username}`, `${email}`], async function (err, results) {
     if (!results[0]) {
+      // Check if the user has logged into the Network.
       res.render('session/register', {
         "pagetitle": "Register",
         "success": null,
         "error": true,
         "errormsg": `You have not logged into the Network, please login and try again.`
+      });
+    } else if (results[2].length) {
+      // Check if email is already linked to another registered email.
+      res.render('session/register', {
+        "pagetitle": "Register",
+        "success": null,
+        "error": true,
+        "errormsg": "This email is already registered with another account."
       });
     } else if (password != passwordconfirm) {
       // Check if the passwords match.
@@ -149,7 +158,6 @@ module.exports.register_post = (req, res) => {
             "error": true,
             "errormsg": `You have not logged into the Network, come and play by looking at our Server here: ${config.website}play`
           });
-
         }
       };
   });
