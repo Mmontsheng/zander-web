@@ -1,4 +1,5 @@
 const database = require('./database'); // zander Database controller
+const lpdatabase = require('./lpdatabase'); // LuckPerms Database controller
 const transporter = require('./mail');
 const config = require('../config.json');
 const ejs = require('ejs');
@@ -21,7 +22,48 @@ module.exports.login_get = (req, res) => {
 // POST
 //
 module.exports.login_post = (req, res) => {
-  res.send('new login');
+  const { username, password } = req.body;
+
+  // Check if the player has logged into the Network.
+  let sql = `select * from webaccounts where playerid = (select id from playerdata where username=?) limit 1;
+  select * from playerdata where id = (select id from playerdata where username=?) limit 1;`
+  database.query(sql, [`${username}`, `${username}`], async function (err, results) {
+    const hashedPassword = results[0][0].password;
+    const uuid = results[1][0].uuid;
+    const username = results[1][0].username;
+    const playerid = results[1][0].id;
+
+    bcrypt.compare(password, hashedPassword).then(function(result) {
+      if (result === true) {
+        lpdatabase.query(`SELECT uuid, (SELECT username FROM luckperms_players WHERE luckperms_players.uuid = luckperms_user_permissions.uuid) as username, permission FROM luckperms_user_permissions WHERE permission LIKE 'group.%';`, function (error, lpresults, fields) {
+          if (error) {
+            res.render('errorviews/500', {
+              "pagetitle": "500: Internal Server Error"
+            });
+            return;
+            throw error;
+          } else {
+            const ranks = [];
+            lpresults.forEach(function(data) {
+              ranks.push(data.permission);              
+            });
+
+            req.session.username = username;
+            req.session.uuid = uuid;
+            req.session.playerid = playerid;
+            req.session.ranks = ranks;
+
+            console.log(`[CONSOLE] [ADMIN] ${username} has logged in.`);
+            res.redirect('/');
+          }
+        });
+      } else {
+        res.render('session/login', {
+          "pagetitle": "Login"
+        });
+      }
+    });
+  });
 };
 
 //
@@ -42,8 +84,6 @@ module.exports.register_get = (req, res) => {
 //
 module.exports.register_post = (req, res) => {
   const { username, email, password, passwordconfirm } = req.body;
-
-  console.log(req.body);
 
   // Check if the player has logged into the Network.
   let sql = `select * from playerdata where username = ? limit 1;
@@ -161,4 +201,15 @@ module.exports.register_post = (req, res) => {
         }
       };
   });
+};
+
+//
+// Logout
+// POST
+//
+module.exports.logout_post = (req, res) => {
+  res.redirect('/');
+  req.session.destroy();
+  console.log('Someone has logged out.');
+  return;  
 };

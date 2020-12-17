@@ -14,4 +14,7 @@ router.get('/register', authenticationController.register_get);
 // Register POST
 router.post('/register', authenticationController.register_post);
 
+// Logout POST
+router.post('/logout', authenticationController.logout_post);
+
 module.exports = router;

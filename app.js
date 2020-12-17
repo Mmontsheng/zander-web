@@ -132,7 +132,7 @@ app.use((req, res, next) => {
   res.locals.warningalert = null;
   res.locals.message = null;
 
-  if (req.session.user) {
+  if (req.session.playerid ) {
       res.locals.info = true
   } else {
       res.locals.info = false
@@ -178,7 +178,6 @@ var report = require('./routes/report')(client);
 var churchduringcovid = require('./routes/churchduringcovid');
 // var giveaway = require('./routes/giveaway');
 
-var login = require('./routes/session/login');
 // var logout = require('./routes/session/logout');
 
 var dashboard = require('./routes/admin/dashboard');
@@ -218,7 +217,6 @@ app.use('/churchduringcovid', churchduringcovid);
 app.use('/report', report);
 // app.use('/giveaway', giveaway);
 
-app.use('/login', login);
 // app.use('/logout',logout)
 
 app.use('/admin/dashboard', dashboard);
