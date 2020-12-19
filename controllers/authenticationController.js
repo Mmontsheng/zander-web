@@ -45,7 +45,9 @@ module.exports.login_post = (req, res) => {
           } else {
             const ranks = [];
             lpresults.forEach(function(data) {
-              ranks.push(data.permission);              
+              const permission = data.permission;
+              let rankName = permission.replace('group.', '');
+              ranks.push(rankName);              
             });
 
             req.session.username = username;

@@ -24,6 +24,8 @@ router.get('/', (req, res, next) => {
         servers: results[2],
         moment: moment
       });
+
+      console.log(req.session);
     };
   });
 });

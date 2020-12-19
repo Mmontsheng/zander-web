@@ -59,8 +59,8 @@ app.use(bodyParser.json());
 app.use(express.json());
 app.use(flash());
 // app.use(cookieParser());
-app.use(passport.initialize());
-app.use(passport.session());
+// app.use(passport.initialize());
+// app.use(passport.session());
 
 app.use(session({
   cookie: { maxAge: 1200000 },
@@ -70,10 +70,13 @@ app.use(session({
 }));
 // Seems to have a common error at the moment:
 // Warning: connect.session() MemoryStore is not designed for a production environment, as it will leak memory, and will not scale past a single process.
+
 //
 // Global Website Variables
 //
 app.use((req, res, next) => {
+  res.locals.session = req.session;
+  
   res.locals.servername = config.servername;
   res.locals.sitecolour = config.sitecolour;
   res.locals.contactemail = config.contactemail;
