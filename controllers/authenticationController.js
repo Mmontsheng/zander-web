@@ -18,6 +18,17 @@ module.exports.login_get = (req, res) => {
 };
 
 //
+// Logout
+// GET
+//
+module.exports.logout_get = (req, res) => {
+  req.flash('successmsg', 'You have been logged out.');
+  console.log(`[CONSOLE] [SESSION] ${req.session.username} has logged out.`);
+  req.session.destroy();
+  res.redirect('/');
+};
+
+//
 // Login
 // POST
 //
@@ -55,7 +66,7 @@ module.exports.login_post = (req, res) => {
             req.session.playerid = playerid;
             req.session.ranks = ranks;
 
-            console.log(`[CONSOLE] [ADMIN] ${username} has logged in.`);
+            console.log(`[CONSOLE] [SESSION] ${username} has logged in.`);
             res.redirect('/');
           }
         });
@@ -203,15 +214,4 @@ module.exports.register_post = (req, res) => {
         }
       };
   });
-};
-
-//
-// Logout
-// POST
-//
-module.exports.logout_post = (req, res) => {
-  res.redirect('/');
-  req.session.destroy();
-  console.log('Someone has logged out.');
-  return;  
 };

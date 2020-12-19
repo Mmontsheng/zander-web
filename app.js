@@ -181,8 +181,6 @@ var report = require('./routes/report')(client);
 var churchduringcovid = require('./routes/churchduringcovid');
 // var giveaway = require('./routes/giveaway');
 
-// var logout = require('./routes/session/logout');
-
 var dashboard = require('./routes/admin/dashboard');
 var accounts = require('./routes/admin/accounts/list');
 var accountscreate = require('./routes/admin/accounts/create');
@@ -219,8 +217,6 @@ app.use('/churchduringcovid', churchduringcovid);
 
 app.use('/report', report);
 // app.use('/giveaway', giveaway);
-
-// app.use('/logout',logout)
 
 app.use('/admin/dashboard', dashboard);
 app.use('/admin', dashboard);

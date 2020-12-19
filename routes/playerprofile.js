@@ -11,13 +11,13 @@ router.get('/profile/:username', function (req, res) {
   (IF(
   		(select gamesessions.id
   		from gamesessions
-  		left join playerdata pd on pd.id = gamesessions.player_id
+  		left join playerdata on playerdata.id = gamesessions.playerid
           where gamesessions.sessionstart <= NOW()
           and gamesessions.sessionend is NULL
-          and pd.username = '${req.params.username}'
-        ), 'online', 'offline'))  as 'status'
+          and playerdata.username = '${req.params.username}'
+        ), 'Online', 'Offline'))  as 'status'
   from gamesessions, playerdata
-  where player_id = playerdata.id
+  where playerid = playerdata.id
   and playerdata.username = '${req.params.username}'
   order by sessionstart desc
   limit 1;`

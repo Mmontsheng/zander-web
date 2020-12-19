@@ -8,13 +8,13 @@ router.get('/login', authenticationController.login_get);
 // Login POST
 router.post('/login', authenticationController.login_post);
 
+// Logout GET
+router.get('/logout', authenticationController.logout_get);
+
 // Register GET
 router.get('/register', authenticationController.register_get);
 
 // Register POST
 router.post('/register', authenticationController.register_post);
-
-// Logout POST
-router.post('/logout', authenticationController.logout_post);
 
 module.exports = router;
