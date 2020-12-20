@@ -28,7 +28,6 @@ CREATE TABLE playerprofile (
   instagram VARCHAR(32),
   steam VARCHAR(32),
   github VARCHAR(40),
-  facebook VARCHAR(50),
   snapchat VARCHAR(30),
   discord VARCHAR(18),
   coverart TEXT,

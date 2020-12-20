@@ -76,7 +76,6 @@ router.get('/profile/:username', function (req, res) {
         } else {
           // Query the database for the players data and online status.
           let sql = `select permission from luckperms_user_permissions where uuid = '${zanderplayerresults[0].uuid}';`
-
           lpdatabase.query(sql, async function (err, playerrankresults) {
             if (err) {
               res.render('errorviews/500', {
@@ -88,8 +87,6 @@ router.get('/profile/:username', function (req, res) {
               playerrankresults.forEach(function (data) {
                 console.log(data.permission);
               });
-
-              console.log(punishmentresults);
 
               res.render('profile', {
                 "pagetitle": `${zanderplayerresults[0].username}'s Profile`,
@@ -112,7 +109,6 @@ router.get('/profile/:username', function (req, res) {
     }
   });
 });
-
 
 function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
