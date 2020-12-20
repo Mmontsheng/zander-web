@@ -156,6 +156,10 @@ footer li {
   margin-bottom: 10px;
 }
 
+.puntypebadge {
+  font-size: 10pt;
+}
+
 /* Bounce in 404 */
 @keyframes bouncing {
   from, 20%, 53%, 80%, to {

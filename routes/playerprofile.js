@@ -1,31 +1,26 @@
 const { Router } = require('express');
 const router = Router();
 const config = require('../config.json');
+const HexColour = require('../HexColour.json');
 const database = require('../controllers/database'); // zander Database controller
 const abdatabase = require('../controllers/abdatabase'); // AdvancedBan Database controller
+const lpdatabase = require('../controllers/lpdatabase'); // LuckPerms Database controller
 const fetch = require('node-fetch');
 
 router.get('/profile/:username', function (req, res) {
   // Query the database for the players data and online status.
   let sql = `select sessionend, sessionstart, uuid, username, joined, server,
   (IF(
-  		(select gamesessions.id
-  		from gamesessions
-  		left join playerdata on playerdata.id = gamesessions.playerid
-          where gamesessions.sessionstart <= NOW()
-          and gamesessions.sessionend is NULL
-          and playerdata.username = '${req.params.username}'
-        ), 'Online', 'Offline'))  as 'status'
-  from gamesessions, playerdata
-  where playerid = playerdata.id
-  and playerdata.username = '${req.params.username}'
-  order by sessionstart desc
-  limit 1;`
+  		(select gamesessions.id from gamesessions left join playerdata pd on pd.id = gamesessions.playerid
+          where gamesessions.sessionstart <= NOW() and gamesessions.sessionend is NULL and pd.username = '${req.params.username}'
+        ), 'online', 'offline'))  as 'status'
+  from gamesessions, playerdata where playerid = playerdata.id
+  and playerdata.username = '${req.params.username}' order by sessionstart desc limit 1;`
 
-  database.query (sql, async function (err, zanderplayerresults) {
+  database.query(sql, async function (err, zanderplayerresults) {
     // If there is no player of that username, send them the Player Not Found screen.
-    if (typeof(zanderplayerresults[0]) == "undefined") {
-      res.render('playernotfound', {
+    if (typeof (zanderplayerresults[0]) == "undefined") {
+      res.render('errorviews/playernotfound', {
         "pagetitle": "Player Not Found"
       });
       return
@@ -42,6 +37,11 @@ router.get('/profile/:username', function (req, res) {
     let tgmbodyres = await response.json();
     if (tgmbodyres['notFound']) {
       tgmresbool = false;
+
+      res.render('errorviews/500', {
+        "pagetitle": "500: Internal Server Error"
+      });
+      return
     } else {
       tgmresbool = true;
     }
@@ -55,42 +55,64 @@ router.get('/profile/:username', function (req, res) {
     const initjoindate = `${initjoin.getDay()} ${months[initjoin.getMonth()]} ${initjoin.getFullYear()}`;
 
     if (err) {
-      throw err;
       res.render('errorviews/500', {
         "pagetitle": "500: Internal Server Error"
       });
       return;
+      throw err;
     } else {
       const reqplayeruuid = zanderplayerresults[0].uuid.replace(/-/g, '');
 
       // Query the database for the players data and online status.
       let sql = `select id, name, reason, operator, punishmentType from punishmenthistory where uuid = '${reqplayeruuid}';`
 
-      abdatabase.query (sql, async function (err, punishmentresults) {
+      abdatabase.query(sql, async function (err, punishmentresults) {
         if (err) {
-          throw err;
           res.render('errorviews/500', {
             "pagetitle": "500: Internal Server Error"
           });
           return;
+          throw err;
         } else {
-          res.render('profile', {
-            "pagetitle": `${req.params.username}'s Profile`,
-            zanderplayerobjdata: zanderplayerresults,
-            punishmentobjdata: punishmentresults,
-            tgmres: tgmbodyres,
-            tgmresboolean: tgmresbool,
-            bedrockuser: bedrockuser,
-            currentserver: capitalizeFirstLetter(zanderplayerresults[0].server),
-            initjoindate: initjoindate,
-            killdeathratio: killdeathratio,
-            winlossratio: winlossratio
+          // Query the database for the players data and online status.
+          let sql = `select permission from luckperms_user_permissions where uuid = '${zanderplayerresults[0].uuid}';`
+
+          lpdatabase.query(sql, async function (err, playerrankresults) {
+            if (err) {
+              res.render('errorviews/500', {
+                "pagetitle": "500: Internal Server Error"
+              });
+              return;
+              throw err;
+            } else {
+              playerrankresults.forEach(function (data) {
+                console.log(data.permission);
+              });
+
+              console.log(punishmentresults);
+
+              res.render('profile', {
+                "pagetitle": `${zanderplayerresults[0].username}'s Profile`,
+                zanderplayerobjdata: zanderplayerresults,
+                punishmentobjdata: punishmentresults,
+                playerrankresults: playerrankresults,
+                HexColour: HexColour,
+                tgmres: tgmbodyres,
+                tgmresboolean: tgmresbool,
+                bedrockuser: bedrockuser,
+                currentserver: capitalizeFirstLetter(zanderplayerresults[0].server),
+                initjoindate: initjoindate,
+                killdeathratio: killdeathratio,
+                winlossratio: winlossratio
+              });
+            }
           });
         }
       });
     }
   });
 });
+
 
 function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);

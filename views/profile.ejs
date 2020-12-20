@@ -195,11 +195,22 @@
               <% punishmentobjdata.forEach(function (data) { %>
                 <tbody>
                   <tr>
-                    <td><%= data.id %></td>
+                    <td>#<%= data.id %></td>
                     <td><a href="<%= data.username %>"><%= data.name %></a></td>
                     <td><a href="<%= data.operator %>"><%= data.operator %></a></td>
                     <td><%= data.reason %></td>
-                    <td><%= data.punishmentType %></td>
+                    <!-- Format with Badges, Punishment Types -->
+                    <% if (data.punishmentType == "WARNING") { %>
+                      <td><span class="puntypebadge badge bg-warning"><%= data.punishmentType %></span></td>
+                    <% } %>
+
+                    <% if (data.punishmentType == "BAN") { %>
+                      <td><span class="puntypebadge badge bg-danger"><%= data.punishmentType %></span></td>
+                    <% } %>
+
+                    <% if (data.punishmentType == "KICK") { %>
+                      <td><span class="puntypebadge badge bg-info"><%= data.punishmentType %></span></td>
+                    <% } %>
                   </tr>
                 </tbody>
               <% }) %>
