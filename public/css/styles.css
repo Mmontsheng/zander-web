@@ -156,8 +156,13 @@ footer li {
   margin-bottom: 10px;
 }
 
-.puntypebadge {
+/* Profile */
+.punishmenttypebadge {
   font-size: 10pt;
+}
+
+.socialmediaicon-profile {
+  min-width: 5px;
 }
 
 /* Bounce in 404 */

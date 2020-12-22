@@ -130,16 +130,20 @@ app.use((req, res, next) => {
   res.locals.srvinterr = '../img/errimages/srvinterr.png';
   res.locals.playernotfound = '../img/errimages/playernotfound.png';
 
-  res.locals.successalert = null;
-  res.locals.erroralert = null;
-  res.locals.warningalert = null;
-  res.locals.message = null;
+  // res.locals.successalert = null;
+  // res.locals.erroralert = null;
+  // res.locals.warningalert = null;
+  // res.locals.message = null;
 
-  if (req.session.playerid ) {
-      res.locals.info = true
-  } else {
-      res.locals.info = false
-  };
+  res.locals.successalert = req.flash('successalert');
+  res.locals.erroralert = req.flash('erroralert');
+  res.locals.warningalert = req.flash('warningalert');
+
+  // if (req.session.playerid ) {
+  //     res.locals.info = true
+  // } else {
+  //     res.locals.info = false
+  // };
 
   next();
 });
@@ -158,8 +162,8 @@ const applicationRoutes = require('./routes/applicationRoutes');
 app.use(applicationRoutes);
 
 // Profiles
-const playerprofile = require('./routes/playerprofile');
-app.use(playerprofile);
+const profileRoutes = require('./routes/profileRoutes');
+app.use(profileRoutes);
 
 //
 // Site Routes

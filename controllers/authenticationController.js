@@ -37,16 +37,18 @@ module.exports.login_post = (req, res) => {
 
   // Check if the player has logged into the Network.
   let sql = `select * from webaccounts where playerid = (select id from playerdata where username=?) limit 1;
-  select * from playerdata where id = (select id from playerdata where username=?) limit 1;`
-  database.query(sql, [`${username}`, `${username}`], async function (err, results) {
+  select * from playerdata where id = (select id from playerdata where username=?) limit 1; 
+  select * from webpermissions where id = (select id from playerdata where username=?) limit 1;`
+  database.query(sql, [`${username}`, `${username}`, `${username}`], async function (err, results) {
     const hashedPassword = results[0][0].password;
     const uuid = results[1][0].uuid;
     const username = results[1][0].username;
     const playerid = results[1][0].id;
+    const permissions = results[2][0];
 
     bcrypt.compare(password, hashedPassword).then(function(result) {
       if (result === true) {
-        lpdatabase.query(`SELECT uuid, (SELECT username FROM luckperms_players WHERE luckperms_players.uuid = luckperms_user_permissions.uuid) as username, permission FROM luckperms_user_permissions WHERE permission LIKE 'group.%';`, function (error, lpresults, fields) {
+        lpdatabase.query(`SELECT uuid, (SELECT username FROM luckperms_players WHERE luckperms_players.uuid = luckperms_user_permissions.uuid) as username, permission FROM luckperms_user_permissions WHERE permission LIKE 'group.%' and (SELECT username FROM luckperms_players WHERE luckperms_players.uuid = luckperms_user_permissions.uuid)=?;`, [username], function (error, lpresults, fields) {
           if (error) {
             res.render('errorviews/500', {
               "pagetitle": "500: Internal Server Error"
@@ -54,17 +56,18 @@ module.exports.login_post = (req, res) => {
             return;
             throw error;
           } else {
-            const ranks = [];
-            lpresults.forEach(function(data) {
-              const permission = data.permission;
-              let rankName = permission.replace('group.', '');
-              ranks.push(rankName);              
-            });
+            // const ranks = [];
+            // lpresults.forEach(function(data) {
+            //   const permission = data.permission;
+            //   let rankName = permission.replace('group.', '');
+            //   ranks.push(rankName);              
+            // });
 
             req.session.username = username;
             req.session.uuid = uuid;
             req.session.playerid = playerid;
-            req.session.ranks = ranks;
+            req.session.permissions = permissions;
+            // req.session.ranks = ranks;
 
             console.log(`[CONSOLE] [SESSION] ${username} has logged in.`);
             res.redirect('/');
@@ -101,7 +104,7 @@ module.exports.register_post = (req, res) => {
   // Check if the player has logged into the Network.
   let sql = `select * from playerdata where username = ? limit 1;
   select * from webaccounts where playerid = (select id from playerdata where username = ?) limit 1;
-  select email from webaccounts where email=?`
+  select email from webaccounts where email=?;`
   database.query (sql, [`${username}`, `${username}`, `${email}`], async function (err, results) {
     if (!results[0]) {
       // Check if the user has logged into the Network.
@@ -143,7 +146,9 @@ module.exports.register_post = (req, res) => {
 
         try {
           // Start the registration linking process and put token into table.
-          database.query(`insert into webaccounts (playerid, email, password, registrationtoken) values ((select id from playerdata where username = ?), ?, ?, ?);`, [`${username}`, `${email}`, `${hashpassword}`, `${token}`], function (err, results) {
+          database.query(`insert into webaccounts (playerid, email, password, registrationtoken) values ((select id from playerdata where username = ?), ?, ?, ?); 
+          insert into webpermissions (playerid) values ((select id from playerdata where username=?));
+          insert into playerprofile (playerid) values ((select id from playerdata where username=?));`, [`${username}`, `${email}`, `${hashpassword}`, `${token}`, `${username}`, `${username}`], function (err, results) {
             if (err) {
               throw err;
               res.render('errorviews/500', {

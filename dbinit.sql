@@ -21,17 +21,17 @@ create index playerdata_username on playerdata (username);
 CREATE TABLE playerprofile (
   id int AUTO_INCREMENT PRIMARY KEY NOT NULL,
   playerid INT NOT NULL DEFAULT 0,
-  interests TEXT,
-  twitter VARCHAR(16),
-  twitch VARCHAR(26),
-  youtube TEXT,
-  instagram VARCHAR(32),
-  steam VARCHAR(32),
-  github VARCHAR(40),
-  snapchat VARCHAR(30),
-  discord VARCHAR(18),
-  coverart TEXT,
-  aboutpage TEXT,
+  interests TEXT DEFAULT NULL,
+  twitter VARCHAR(16) DEFAULT NULL,
+  twitch VARCHAR(26) DEFAULT NULL,
+  youtube TEXT DEFAULT NULL,
+  instagram VARCHAR(32) DEFAULT NULL,
+  steam VARCHAR(32) DEFAULT NULL,
+  github VARCHAR(40) DEFAULT NULL,
+  snapchat VARCHAR(30) DEFAULT NULL,
+  discord VARCHAR(18) DEFAULT NULL,
+  coverart TEXT DEFAULT NULL,
+  aboutpage TEXT DEFAULT NULL,
   FOREIGN KEY (playerid) REFERENCES playerdata (id)
 );
 
@@ -85,25 +85,53 @@ CREATE TABLE webaccounts (
   FOREIGN KEY (playerid) REFERENCES playerdata (id)
 );
 
--- This account should be removed immediately after setting up your own account.
--- INSERT INTO accounts (username, password, status) VALUES ("root", "$2y$10$lM.dzxCibg5lbeh6wNRKk.DVfkUOQ0ZsPqnbUstgQ0GDbsBFo7JQa", "ACTIVE");
+CREATE TABLE webpermissions (
+  id int AUTO_INCREMENT PRIMARY KEY NOT NULL,
+  playerid INT NOT NULL DEFAULT 0,
 
--- CREATE TABLE accountspermissions (
---   id int AUTO_INCREMENT PRIMARY KEY NOT NULL,
---   account_id INT NOT NULL DEFAULT 0,
---   admincontentcreator BOOLEAN DEFAULT 0,
---   adminevents BOOLEAN DEFAULT 0,
---   adminservers BOOLEAN DEFAULT 0,
---   adminaccounts BOOLEAN DEFAULT 0,
---   adminaccountscreate BOOLEAN DEFAULT 0
---   adminaccountsdelete BOOLEAN DEFAULT 0
---   adminaccountsdisable BOOLEAN DEFAULT 0
---   adminaccountsreenable BOOLEAN DEFAULT 0
---   adminstafftitle BOOLEAN DEFAULT 0
--- );
---
--- -- This allows the root account to have access to all parts of the admin panel
--- INSERT INTO accountspermissions (account_id, admincontentcreator, adminevents, adminservers, adminaccounts, adminaccountspermissions) VALUES (0, 1, 1, 1, 1, 1);
+  profileedit BOOLEAN DEFAULT 0,
+  administrationpanel BOOLEAN DEFAULT 0,
+
+  eventadd BOOLEAN DEFAULT 0,
+  eventedit BOOLEAN DEFAULT 0,
+  eventremove BOOLEAN DEFAULT 0,
+
+  serveradd BOOLEAN DEFAULT 0,
+  serveredit BOOLEAN DEFAULT 0,
+  serverremove BOOLEAN DEFAULT 0,
+
+  stafftitleadd BOOLEAN DEFAULT 0,
+  stafftitleedit BOOLEAN DEFAULT 0,
+  stafftitleremove BOOLEAN DEFAULT 0,
+
+  punishmentissuewarn BOOLEAN DEFAULT 0,
+  punishmentissuekick BOOLEAN DEFAULT 0,
+  punishmentissuetempban BOOLEAN DEFAULT 0,
+  punishmentissueban BOOLEAN DEFAULT 0,
+
+  punishmentissuewebwarn BOOLEAN DEFAULT 0,
+  punishmentissuewebkick BOOLEAN DEFAULT 0,
+  punishmentissuewebtempban BOOLEAN DEFAULT 0,
+  punishmentissuewebban BOOLEAN DEFAULT 0,
+  punishmentissuewebdisable BOOLEAN DEFAULT 0,
+
+  punishmentissuediscordwarn BOOLEAN DEFAULT 0,
+  punishmentissuediscordkick BOOLEAN DEFAULT 0,
+  punishmentissuediscordtempban BOOLEAN DEFAULT 0,
+  punishmentissuediscordban BOOLEAN DEFAULT 0,
+
+  punishmentedit BOOLEAN DEFAULT 0,
+  punishmentremove BOOLEAN DEFAULT 0,
+
+  appealopen BOOLEAN DEFAULT 0,
+  appealclose BOOLEAN DEFAULT 0,
+  appealappeal BOOLEAN DEFAULT 0,
+  appeallock BOOLEAN DEFAULT 0,
+  appealstaffnote BOOLEAN DEFAULT 0,
+  appealescalate BOOLEAN DEFAULT 0,
+
+  FOREIGN KEY (playerid) REFERENCES playerdata (id)
+);
 
 CREATE TABLE events (
   id int AUTO_INCREMENT PRIMARY KEY NOT NULL,
@@ -159,7 +187,7 @@ CREATE TABLE votes (
 --   -- motd BOOLEAN,
 --   ingame BOOLEAN,
 --   web BOOLEAN,
---   createdat DATETIME,
+--   createdate DATETIME,
 --   enabled BOOLEAN
 -- );
 
@@ -171,7 +199,7 @@ CREATE TABLE votes (
 --   locked BOOLEAN,
 --   appealed BOOLEAN,
 --   escalated BOOLEAN,
---   createdate DATETIME,
+--   createdate TIMESTAMP NOT NULL DEFAULT NOW(),
 --   updatedate DATETIME,
 --   FOREIGN KEY (playerid) REFERENCES playerdata (id)
 -- );
