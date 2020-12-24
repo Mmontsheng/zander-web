@@ -161,7 +161,6 @@ app.use(policyRoutes);
 const applicationRoutes = require('./routes/applicationRoutes');
 app.use(applicationRoutes);
 
-// Profiles
 const profileRoutes = require('./routes/profileRoutes');
 app.use(profileRoutes);
 

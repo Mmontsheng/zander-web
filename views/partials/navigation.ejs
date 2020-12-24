@@ -38,7 +38,7 @@
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img class="staffimg" src="https://crafatar.com/avatars/<%= session.uuid %>?helm" height="20px" draggable="false"> <%= session.username %></a>
               <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                 <a class="dropdown-item" href="/profile/<%= session.username %>"><i class="fas fa-user"></i> Profile</a>
-                <a class="dropdown-item" href="/edit/profile"><i class="fas fa-user-edit"></i> Edit Profile</a>
+                <a class="dropdown-item" href="/profile/<%= session.username %>/edit"><i class="fas fa-user-edit"></i> Edit Profile</a>
 
                 <% if (session.permissions.administrationpanel == true) { %>
                   <a class="dropdown-item" href="/admin/dashboard"><i class="fas fa-users-cog"></i> Dashboard</a>
